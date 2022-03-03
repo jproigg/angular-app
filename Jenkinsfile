@@ -2,7 +2,6 @@ pipeline {
     agent {
         label "windows-worker"
     }
-
     stages {
         stage('Angular Verification') {
             steps {
@@ -10,21 +9,30 @@ pipeline {
             }
         }
         
-        // stage('Initialize Terraform'){
-        //     steps {
-        //         bat "terraform init"
-        //     }
-        // }
-
-        // stage('Create Infrastructure AWS Terraform'){
-        //     steps {
-        //         bat "terraform apply --auto-approve"
-        //     }
-        // }
-
-        stage('Deploy to AWS S3'){
+        stage('Dependencies Installation') {
             steps {
-                bat "aws s3 cp C:\\inetpub\\wwwroot\\romell\\dev s3://my-tf-test-bucket-clase7-ucreativa --recursive"
+                bat "npm install"
+            }
+        }
+        stage('Lint Test Execution') {
+            steps {
+                bat "ng lint"
+            }
+        }
+        stage('Unit Test Execution') {
+            steps {
+                bat "ng test"
+            }
+        }
+        stage('Build Execution') {
+            steps {
+                bat "ng build"
+            }
+        }
+        
+        stage('Deploy Application') {
+            steps {
+                bat "xcopy dist\\clase6 C:\\inetpub\\wwwroot\\romell\\dev /s /y"
             }
         }
     }
